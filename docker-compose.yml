@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  n8n:
+    image: n8nio/n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_DATABASE_TYPE=postgres
+      - N8N_DB_POSTGRESDB_HOST=postgres
+      - N8N_DB_POSTGRESDB_USER=n8nuser
+      - N8N_DB_POSTGRESDB_PASSWORD=supersecretpassword
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:14
+    restart: always
+    environment:
+      - POSTGRES_USER=n8nuser
+      - POSTGRES_PASSWORD=supersecretpassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  ollama:
+    image: ollama/ollama
+    restart: always
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+volumes:
+  n8n_data:
+  postgres_data:
+  ollama_data:
